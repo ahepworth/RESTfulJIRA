@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JIRA incident submission</title>
+<script src="../javascript/jquery-2.1.1.js"></script>
+<script>
+
+// REMEMBER to start Chrome with --disable-web-security from the command line
+// or else you will fail the cross-site scripting protection
+
+// CHANGE THESE TO BE YOUR JIRA ACCOUNT DETAILS
+
+var username="username";
+var password = "password";
+var userpass = btoa(username+":"+password);
+
+function initialize(){
+	//alert("Initialise called");
+	//put initialisation stuff here
+}
+
+function queryJIRA() {
+	alert("About to call JIRA api");
+
+	$.ajax({url:"http://atos-csms.atlassian.net/rest/api/latest/issue/CORE-5",
+		success:function(result,status,xhr){
+			alert("Success calling JIRA api");
+			$("#result").text("Got this... "+JSON.stringify(result));
+			},
+		error:function(xhr,status,error){
+			alert("Error calling JIRA:"+JSON.stringify(xhr,null,4));
+		},
+		dataType:"json",
+		contentType:"application/json",
+		beforeSend: function (xhr) {
+            xhr.setRequestHeader('Authorization', "Basic "+userpass);
+        },
+		timeout:2000,
+		type:"GET"
+		//data:'{"query":"something","params":"stuff"}'
+		});
+}
+
+</script>
+</head>
+<body onload="initialize()">
+<button type="submit" onclick="queryJIRA()">Submit</button>
+<div id=result></div>
+</body>
+</html>
